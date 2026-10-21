@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import '../shared/module_pages.dart';
-import '../../models/models.dart';
+import '../routes/timetable_screen.dart';
 
+/// Student-shell entry point for the full weekly timetable layout.
 class StudentTimetablePage extends StatelessWidget {
   const StudentTimetablePage({super.key});
+
   @override
-  Widget build(BuildContext context) => const GenericModulePage(title: 'Timetable', role: UserRole.student);
+  Widget build(BuildContext context) => const TimetableScreen();
 }

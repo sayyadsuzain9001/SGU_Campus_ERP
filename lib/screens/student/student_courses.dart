@@ -14,15 +14,17 @@ class StudentCoursesPage extends StatelessWidget {
       subtitle: 'Courses you are enrolled in this semester.',
       child: LayoutBuilder(
         builder: (context, constraints) {
+          final width = constraints.maxWidth;
+          final columns = width >= 1300 ? 4 : width >= 900 ? 3 : width >= 580 ? 2 : 1;
           return GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: MockData.i.courses.length,
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: constraints.maxWidth > 800 ? 280 : 420,
-              mainAxisExtent: 190,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: columns,
+              mainAxisExtent: 292,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
             ),
             itemBuilder: (context, index) {
               final course = MockData.i.courses[index];

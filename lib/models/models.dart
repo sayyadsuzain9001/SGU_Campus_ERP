@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 enum UserRole { student, teacher, admin }
 
 enum RecordStatus { pending, submitted, graded, overdue }
@@ -44,17 +46,6 @@ class Assignment {
     required this.marks,
     required this.status,
   });
-
-  Assignment copyWith({RecordStatus? status}) {
-    return Assignment(
-      id: id,
-      courseId: courseId,
-      title: title,
-      due: due,
-      marks: marks,
-      status: status ?? this.status,
-    );
-  }
 }
 
 class Announcement {
@@ -90,18 +81,62 @@ class AttendancePoint {
   const AttendancePoint(this.label, this.value);
 }
 
-class ServiceRequest {
+class CampusService {
+  final String id;
+  final String name;
+  final String description;
+  final String location;
+  final String hours;
+  final String email;
+  final String phone;
+  final IconData icon;
+
+  const CampusService({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.location,
+    required this.hours,
+    required this.email,
+    required this.phone,
+    required this.icon,
+  });
+}
+
+class CampusEventItem {
   final String id;
   final String title;
+  final String dateLabel;
+  final String time;
+  final String location;
   final String category;
-  final String status;
-  final String date;
+  final String description;
+  final IconData icon;
 
-  ServiceRequest({
+  const CampusEventItem({
     required this.id,
     required this.title,
+    required this.dateLabel,
+    required this.time,
+    required this.location,
     required this.category,
-    required this.status,
-    required this.date,
+    required this.description,
+    required this.icon,
+  });
+}
+
+class TimetableEntry {
+  final String day;
+  final String subject;
+  final String time;
+  final String room;
+  final String instructor;
+
+  const TimetableEntry({
+    required this.day,
+    required this.subject,
+    required this.time,
+    required this.room,
+    required this.instructor,
   });
 }

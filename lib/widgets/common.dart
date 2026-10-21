@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../theme/app_theme.dart';
 
 class StatusChip extends StatelessWidget {
@@ -8,13 +9,10 @@ class StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
     decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [color.withValues(alpha: 0.15), color.withValues(alpha: 0.05)],
-      ),
+      color: color.withValues(alpha: .10),
       borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: color.withValues(alpha: 0.3)),
     ),
     child: Text(
       label,
@@ -32,15 +30,6 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(
     children: [
-      Container(
-        width: 4,
-        height: 18,
-        decoration: BoxDecoration(
-          color: AppTheme.red,
-          borderRadius: BorderRadius.circular(2),
-        ),
-      ),
-      const SizedBox(width: 8),
       Expanded(
         child: Text(
           title,
@@ -48,33 +37,13 @@ class SectionHeader extends StatelessWidget {
             fontSize: 18,
             fontWeight: FontWeight.w800,
             color: AppTheme.navy,
-            letterSpacing: -0.3,
           ),
         ),
       ),
       if (action != null)
         TextButton(
           onPressed: onAction,
-          style: TextButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            minimumSize: Size.zero,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                action!,
-                style: const TextStyle(
-                  color: AppTheme.red,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 13,
-                ),
-              ),
-              const SizedBox(width: 4),
-              const Icon(Icons.arrow_forward_rounded, size: 14, color: AppTheme.red),
-            ],
-          ),
+          child: Text(action!, style: const TextStyle(color: AppTheme.red)),
         ),
     ],
   );
@@ -85,66 +54,63 @@ class PageContainer extends StatelessWidget {
   final String? subtitle;
   final Widget child;
   final List<Widget>? actions;
-  const PageContainer({super.key, required this.title, required this.subtitle, required this.child, this.actions});
+  const PageContainer({
+    super.key,
+    required this.title,
+    this.subtitle,
+    required this.child,
+    this.actions,
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final mobile = constraints.maxWidth < 600;
-
-        return SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(
-            mobile ? 14 : 24,
-            mobile ? 4 : 8,
-            mobile ? 14 : 24,
-            36,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: TextStyle(
-                            fontSize: mobile ? 20 : 24,
-                            fontWeight: FontWeight.w900,
-                            color: AppTheme.navy,
-                            letterSpacing: -0.5,
-                          ),
+  Widget build(BuildContext context) => SingleChildScrollView(
+    padding: EdgeInsets.fromLTRB(MediaQuery.sizeOf(context).width >= 1200 ? 30 : 18, 24, MediaQuery.sizeOf(context).width >= 1200 ? 30 : 18, 36),
+    child: Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1500),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w800,
+                          color: AppTheme.navy,
                         ),
-                        if (subtitle case final sub?) ...[
-                          const SizedBox(height: 2),
-                          Text(
-                            sub,
-                            style: TextStyle(
-                              color: AppTheme.muted,
-                              fontSize: mobile ? 12 : 13,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
+                      ),
+                      ...?subtitle?.isNotEmpty == true
+                          ? [
+                              const SizedBox(height: 4),
+                              Text(
+                                subtitle!,
+                                style: const TextStyle(
+                                  color: AppTheme.muted,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ]
+                          : null,
+                    ],
                   ),
-                  if (actions case final acts? when acts.isNotEmpty)
-                    Wrap(spacing: 8, runSpacing: 8, children: acts),
-                ],
-              ),
-              SizedBox(height: mobile ? 10 : 12),
-              child,
-            ],
-          ),
-        );
-      },
-    );
-  }
+                ),
+                ...?actions,
+              ],
+            ),
+            const SizedBox(height: 18),
+            child,
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 class EmptyActionCard extends StatelessWidget {
@@ -152,76 +118,53 @@ class EmptyActionCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback? onTap;
-  const EmptyActionCard({super.key, required this.icon, required this.title, required this.subtitle, this.onTap});
+  const EmptyActionCard({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    this.onTap,
+  });
 
   @override
-  Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppTheme.border),
-          boxShadow: AppTheme.softShadow,
-        ),
-        child: Material(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(16),
-            child: Padding(
-              padding: const EdgeInsets.all(18),
-              child: Row(
+  Widget build(BuildContext context) => Card(
+    child: InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Row(
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: AppTheme.red.withValues(alpha: .08),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: AppTheme.red),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 46,
-                    height: 46,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [AppTheme.red.withValues(alpha: 0.15), AppTheme.red.withValues(alpha: 0.05)],
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(icon, color: AppTheme.red, size: 22),
+                  Text(
+                    title,
+                    style: const TextStyle(fontWeight: FontWeight.w800),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 14,
-                            color: AppTheme.navy,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          subtitle,
-                          style: const TextStyle(
-                            color: AppTheme.muted,
-                            fontSize: 12,
-                            height: 1.3,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: AppTheme.border.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(Icons.chevron_right, color: AppTheme.muted, size: 18),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(color: AppTheme.muted, fontSize: 12),
                   ),
                 ],
               ),
             ),
-          ),
+            const Icon(Icons.chevron_right, color: AppTheme.muted),
+          ],
         ),
-      );
+      ),
+    ),
+  );
 }

@@ -1,0 +1,157 @@
+import 'package:flutter/material.dart';
+import '../data/mock_data.dart';
+import '../theme/app_theme.dart';
+
+class MiniCalendar extends StatelessWidget {
+  final bool compact;
+  const MiniCalendar({super.key, this.compact = false});
+
+  @override
+  Widget build(BuildContext context) {
+    const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    const numbers = [30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 1, 2, 3];
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.border),
+        boxShadow: AppTheme.softShadow,
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(compact ? 16 : 20),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.calendar_today_rounded, size: 18, color: AppTheme.red),
+                const SizedBox(width: 8),
+                const Text('September 2026', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15, color: AppTheme.navy)),
+                const Spacer(),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.chevron_right_rounded, size: 20, color: AppTheme.muted),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 42,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 7,
+                childAspectRatio: 1.25,
+              ),
+              itemBuilder: (_, index) {
+                if (index < 7) {
+                  return Center(
+                    child: Text(
+                      days[index],
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.muted,
+                      ),
+                    ),
+                  );
+                }
+                final n = numbers[index - 7];
+                final selected = n == 24 && index < 35;
+                return Center(
+                  child: Container(
+                    width: 28,
+                    height: 28,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      gradient: selected ? AppTheme.primaryGradient : null,
+                      color: selected ? null : Colors.transparent,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      '$n',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: selected ? Colors.white : AppTheme.navy,
+                        fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class UpcomingEvents extends StatelessWidget {
+  const UpcomingEvents({super.key});
+  @override
+  Widget build(BuildContext context) => Container(
+        decoration: BoxDecoration(
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppTheme.border),
+          boxShadow: AppTheme.softShadow,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.event_outlined, size: 18, color: AppTheme.red),
+                  const SizedBox(width: 8),
+                  const Text('Upcoming Events', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppTheme.navy)),
+                ],
+              ),
+              const SizedBox(height: 16),
+              for (final event in MockData.i.events)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 14),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 4,
+                        height: 42,
+                        decoration: BoxDecoration(
+                          color: event.category == 'Deadlines'
+                              ? AppTheme.red
+                              : event.category == 'Classes'
+                                  ? AppTheme.info
+                                  : AppTheme.warning,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              event.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppTheme.navy),
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              '${event.date.day} Sep • ${event.time}',
+                              style: const TextStyle(fontSize: 11, color: AppTheme.muted, fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+}
